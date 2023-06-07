@@ -43,6 +43,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.GET, "/users")
             .authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/users/**")
+            .authenticated()
             .requestMatchers("/posts/**")
             .authenticated()
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/authenticate/**", "/users/**")

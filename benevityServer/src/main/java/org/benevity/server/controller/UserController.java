@@ -34,12 +34,6 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUser(String userId) {
-        this.userService.deleteUser(userId, getUserLoggedId());
-        return ResponseEntity.ok(null);
-    }
-
-    @Override
     public ResponseEntity<List<UserDTO>> getUserList() {
         return ResponseEntity.ok(toUserDTOList(this.userService.getUserList()));
     }
@@ -47,5 +41,11 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<UserDTO> updateUser(String userId, UserDTO user) {
         return ResponseEntity.status(HttpStatus.OK).body(toUserDTO(this.userService.updateUser(userId, toUser(user))));
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUser(String userId) {
+        this.userService.deleteUser(userId, getUserLoggedId());
+        return ResponseEntity.ok(null);
     }
 }

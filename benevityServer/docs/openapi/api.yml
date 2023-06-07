@@ -286,6 +286,8 @@ paths:
       operationId: deleteUser
       tags:
         - Users
+      security:
+        - BearerAuth: [ ]
       description: Delete an user
       summary: Delete an user
       parameters:
