@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    hikari:
+      auto-commit: false
+    driver-class-name: org.postgresql.Driver
+    password: postgres
+    url: jdbc:postgres://localhost:5432/postgres
+    username: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    show-sql: true
+cloudinary:
+  cloudName: dbefult8l
+  api:
+    key: 717392878266931
+    secret: zBNUyLfNCw-6CGqJG7WeJEGb60Q

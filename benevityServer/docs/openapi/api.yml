@@ -1,0 +1,436 @@
+openapi: 3.0.3
+info:
+  title: Benevity Post Service
+  version: 1.0.0
+  description: Benevity Post Service API
+  contact:
+    email: jorgebc88@gmail.com
+servers:
+  - url: http:\\localhost:8080
+    description: localhost
+
+paths:
+  /posts:
+    get:
+      operationId: getPostList
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Retrieve all posts
+      summary: Retrieve all posts
+      responses:
+        '200':
+          description: All the posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      operationId: addPost
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Create a new post
+      summary: Create a new post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+      responses:
+        '201':
+          description: Image updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /posts/{id}:
+    get:
+      operationId: getPost
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Retrieve a post by id
+      summary: Retrieve a post by id
+      parameters:
+        - in: path
+          name: id
+          description: Post id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      operationId: deletePost
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Create a new post
+      summary: Create a new post
+      parameters:
+        - in: path
+          name: id
+          description: Post id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /posts/{id}/image:
+    get:
+      operationId: getPostImage
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Retrieve a post image by id
+      summary: Retrieve a post image by id
+      parameters:
+        - in: path
+          name: id
+          description: Post id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Image received
+          content:
+            image/png:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      operationId: uploadPostImage
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Upload a post image by id
+      summary: Upload a post image by id
+      parameters:
+        - in: path
+          name: id
+          description: Post id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Image uploaded
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      operationId: deletePostImage
+      tags:
+        - Posts
+      security:
+        - BearerAuth: [ ]
+      description: Upload a post image by id
+      summary: Upload a post image by id
+      parameters:
+        - in: path
+          name: id
+          description: Post id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Image deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users:
+    get:
+      operationId: getUserList
+      tags:
+        - Users
+      security:
+        - BearerAuth: [ ]
+      description: Retrieve all users
+      summary: Retrieve all users
+      responses:
+        '200':
+          description: All the users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      operationId: addUser
+      tags:
+        - Users
+      description: Create a new user
+      summary: Create a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /users/{userId}:
+    get:
+      operationId: getUser
+      tags:
+        - Users
+      description: Retrieve a user by id
+      summary: Retrieve a user by id
+      parameters:
+        - in: path
+          name: userId
+          description: User id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      operationId: updateUser
+      tags:
+        - Users
+      description: Update an user
+      summary: Update an user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      parameters:
+        - in: path
+          name: userId
+          description: User id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      operationId: deleteUser
+      tags:
+        - Users
+      description: Delete an user
+      summary: Delete an user
+      parameters:
+        - in: path
+          name: userId
+          description: User id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /authenticate:
+    post:
+      operationId: authenticate
+      tags:
+        - Login
+      description: Authenticate a user
+      summary: Authenticate a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: User authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PostRequest:
+      type: object
+      description: Post object
+      required:
+        - name
+        - title
+        - content
+      properties:
+        name:
+          description: Post name
+          type: string
+        title:
+          description: Post title
+          type: string
+        content:
+          description: Post content
+          type: string
+    PostResponse:
+      allOf:
+        - $ref: '#/components/schemas/PostRequest'
+        - properties:
+            slug:
+              description: Post slug
+              type: string
+            id:
+              description: Post id
+              type: string
+            imageUrl:
+              description: Image url
+              type: string
+            user:
+              $ref: '#/components/schemas/UserDTO'
+            dateAdded:
+              description: Creation date
+              type: time
+            dateAddedFormatted:
+              description: Creation date
+              type: string
+    UserDTO:
+      type: object
+      description: User object
+      properties:
+        id:
+          description: User id
+          type: string
+        username:
+          description: Username
+          type: string
+        email:
+          description: User email
+          type: string
+        password:
+          description: User password
+          type: string
+        postsPosted:
+          description: Posts posted
+          type: integer
+    AuthRequest:
+      type: object
+      description: Auth request
+      properties:
+        username:
+          description: Username
+          type: string
+        password:
+          description: User password
+          type: string
+          format: password
+    AuthResponse:
+      type: object
+      description: Auth response
+      properties:
+        jwtToken:
+          description: Username
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - tittle
+        - desctiption
+      properties:
+        status:
+          description: The error status code
+          type: integer
+          format: int32
+        title:
+          description: Error tittle
+          type: string
+        description:
+          description: Detailed information about the error
+          type: string
+  responses:
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnauthorizedError:
+      description: Unauthorized Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

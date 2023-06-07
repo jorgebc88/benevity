@@ -1,0 +1,100 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id 'org.springframework.boot' version '3.0.0'
+    id 'java'
+    id 'org.openapi.generator' version '6.2.1'
+}
+
+group 'org.benevity'
+version project.hasProperty('build_version') ? project.property('build_version') : "local"
+sourceCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(
+            'org.springframework.boot:spring-boot-starter:3.0.0',
+            'org.springframework.boot:spring-boot-starter-web:3.0.0',
+
+            'org.springframework.boot:spring-boot-starter-security:3.0.0',
+
+            'org.springframework.boot:spring-boot-starter-validation:3.0.0',
+            'org.springframework.boot:spring-boot-starter-data-jpa:3.0.0',
+            'org.postgresql:postgresql:42.3.1',
+
+            'io.jsonwebtoken:jjwt-api:0.11.5',
+            'io.jsonwebtoken:jjwt-impl:0.11.5',
+            'io.jsonwebtoken:jjwt-jackson:0.11.5',
+
+            //Library to upload images
+            'com.cloudinary:cloudinary-http44:1.31.0',
+
+            //Openapi libs
+            'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2',
+            'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.2',
+            'org.openapitools:jackson-databind-nullable:0.2.4'
+    )
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    testImplementation (
+            'org.junit.jupiter:junit-jupiter-api:5.8.1',
+            'org.junit.jupiter:junit-jupiter-params:5.8.1',
+            'org.springframework.boot:spring-boot-starter-test:3.0.0',
+            'com.h2database:h2:1.4.199',
+            'commons-io:commons-io:2.12.0',
+            'org.skyscreamer:jsonassert:1.5.1',
+            'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    )
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+def apiPath = "$rootDir/docs/openapi/api.yml".toString()
+def apiGeneratedPath = "$buildDir/generated/".toString()
+
+task buildSchema(type: GenerateTask) {
+    generatorName = "spring"
+    inputSpec = apiPath
+    outputDir = apiGeneratedPath
+
+    groupId = "$project.group"
+    id = "$project.name-java-client"
+    version = "$project.version"
+    apiPackage = "org.benevity.server.openapi.api"
+    invokerPackage = "org.benevity.server.openapi.invoker"
+    modelPackage = "org.benevity.server.openapi.model"
+    enablePostProcessFile = true
+    skipOverwrite = false
+    typeMappings = ["time": "LocalDateTime"]
+    importMappings = ["LocalDateTime": "java.time.LocalDateTime"]
+    configOptions = [
+            configPackage        : "org.benevity.server.openapi.config",
+            dateLibrary          : "java17",
+            serializationLibrary : "jackson",
+            library              : "spring-boot",
+            interfaceOnly        : "true",
+            serializableModel    : "true",
+            useTags              : "true",
+            useSwaggerUI         : "true",
+            documentationProvider: "springdoc",
+            useSpringBoot3       : "true"
+    ]
+}
+
+/* Code will be generated during compilation */
+compileJava.dependsOn(buildSchema)
+
+/* Attach the generated folder as source for this project */
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
+}
